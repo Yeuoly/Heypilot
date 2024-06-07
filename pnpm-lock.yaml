@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@tauri-apps/api':
+    specifier: ^1.5.6
+    version: registry.npmmirror.com/@tauri-apps/api@1.5.6
   vue:
     specifier: ^3.4.21
     version: registry.npmmirror.com/vue@3.4.27(typescript@5.4.5)
@@ -588,6 +591,13 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  registry.npmmirror.com/@tauri-apps/api@1.5.6:
+    resolution: {integrity: sha512-LH5ToovAHnDVe5Qa9f/+jW28I6DeMhos8bNDtBOmmnaDpPmJmYLyHdeDblAWWWYc7KKRDg9/66vMuKyq0WIeFA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@tauri-apps/api/-/api-1.5.6.tgz}
+    name: '@tauri-apps/api'
+    version: 1.5.6
+    engines: {node: '>= 14.6.0', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+    dev: false
 
   registry.npmmirror.com/@tauri-apps/cli-darwin-arm64@1.5.14:
     resolution: {integrity: sha512-lxoSOp3KKSqzHJa7iT32dukPGMlfsTuja1xXSgwR8o/fqzpYJY7FY/3ZxesP8HR66FcK+vtqa//HNqeOQ0mHkA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@tauri-apps/cli-darwin-arm64/-/cli-darwin-arm64-1.5.14.tgz}
