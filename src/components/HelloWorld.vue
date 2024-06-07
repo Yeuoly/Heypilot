@@ -1,18 +1,31 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { emit, listen } from '@tauri-apps/api/event'
-import { Event } from '../event/enum';
+import { SystemTrayManager } from '../utils/system_tray_manager'
+import { GetData, SetData } from '../utils/store';
 
 defineProps<{ msg: string }>()
 
 const count = ref(0)
 
+SystemTrayManager.SetEventListeners((item) => {
+  console.log(item.id)
+})
+
 const onClick = () => {
-  count.value++
-  emit(Event.EVENT_ADD_ITEM, {
-    message: 'Hello from Vue 3',
+  SystemTrayManager.Add({
+    id: Math.random().toString(),
+    label: Math.random().toString(),
+    active: false,
   })
 }
+
+setTimeout(async () => {
+  await SetData('test', 123);
+
+  const data = await GetData<number>('test');
+
+  console.log(data);
+})
 </script>
 
 <template>

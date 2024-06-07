@@ -1,3 +1,4 @@
 export enum Event {
-    EVENT_ADD_ITEM = 'add-item'
+    EVENT_REFRESH_TRAY_ITEMS = 'refresh-scenarios',
+    EVENT_TRAY_CLICK = 'click-scenario'
 }
