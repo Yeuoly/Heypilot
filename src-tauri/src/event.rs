@@ -13,6 +13,7 @@ pub const EVENT_SCREENSHOT_RESPONSE: &str = "screenshot-response";
 pub const EVENT_CLICK_SCENARIO: &str = "click-scenario";
 pub const EVENT_MOVE_TO_AND_SET_ON_TOP: &str = "move-to-and-set-on-top";
 pub const EVENT_SET_NOT_ON_TOP: &str = "set-not-on-top";
+pub const EVENT_SLIDE_FOCUS_INPUT: &str = "slide-focus-input";
 pub const EVENT_QUIT: &str = "quit";
 
 pub fn mount_event_listener(app: &mut App) {

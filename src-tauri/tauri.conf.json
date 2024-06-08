@@ -19,6 +19,9 @@
       },
       "globalShortcut": {
         "all": true
+      },
+      "window": {
+        "hide": true
       }
     },
     "systemTray": {

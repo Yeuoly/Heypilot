@@ -1,5 +1,6 @@
 use tauri::{AppHandle, Event, Manager, PhysicalPosition, PhysicalSize};
 use crate::entities::MoveToAndSetOnTopPayload;
+use crate::event::EVENT_SLIDE_FOCUS_INPUT;
 
 pub fn move_to_and_set_on_top(app_handle: &AppHandle, event: Event) {
     let payload_str = event.payload().unwrap();
@@ -28,6 +29,15 @@ pub fn move_to_and_set_on_top(app_handle: &AppHandle, event: Event) {
 
         // hide status bar
         window.set_decorations(false).unwrap();
+
+        // focus the window
+        window.set_focus().unwrap();
+
+        // bring the window to front
+        window.show().unwrap();
+
+        // send focus to the window
+        app_handle.emit_all(EVENT_SLIDE_FOCUS_INPUT, 1).unwrap();
     }
 }
 
