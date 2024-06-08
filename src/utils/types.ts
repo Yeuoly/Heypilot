@@ -18,7 +18,7 @@ export type SystemScreenShotRequestPayload = {
 
 export type SystemScreenShotResponsePayload = {
     error: string;
-    image: string;
+    path: string;
 }
 
 export type MoveToAndSetOnTopPayload = {

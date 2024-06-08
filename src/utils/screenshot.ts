@@ -2,6 +2,7 @@ import { emit, listen } from '@tauri-apps/api/event'
 import { Event } from '../event/enum'
 import { SystemScreenShotRequestPayload, SystemScreenShotResponsePayload } from './types'
 
+// screenshot and return the path
 export const screenShot = (payload: SystemScreenShotRequestPayload) => new Promise<string | null>(async (resolve, reject) => {
     payload.monitor = payload.monitor || 0
 
@@ -17,7 +18,7 @@ export const screenShot = (payload: SystemScreenShotRequestPayload) => new Promi
         if (event.payload.error) {
             reject(event.payload.error)
         } else {
-            resolve(event.payload.image)
+            resolve(event.payload.path)
         }
     })
 

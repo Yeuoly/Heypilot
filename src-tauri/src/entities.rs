@@ -29,7 +29,7 @@ pub struct ScreenShotRequestPayload {
 #[derive(Clone)]
 pub struct ScreenShotResponsePayload {
     pub error: String,
-    pub image: String
+    pub path: String
 }
 
 #[derive(Deserialize)]

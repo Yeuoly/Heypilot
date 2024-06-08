@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
+import yamlLoader from '@modyfi/vite-plugin-yaml'
 
 export default defineConfig({
   plugins:[
     vue(),
-    svgLoader()
+    svgLoader(),
+    yamlLoader()
   ],
   // prevent vite from obscuring rust errors
   clearScreen: false,

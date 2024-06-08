@@ -1,8 +1,6 @@
-use std::{fs::File, io::Read};
 use std::time::SystemTime;
 use tauri::api::path::data_dir;
 
-use base64::{engine::general_purpose, Engine};
 use screenshots::Screen;
 use tauri::{AppHandle, Event, Manager};
 
@@ -14,7 +12,7 @@ pub fn screenshot(app_handle: &AppHandle, event: Event) {
     if !payload.is_ok() {
         let _ = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
             error: "Invalid payload".to_string(),
-            image: "".to_string()
+            path: "".to_string()
         });
     }
 
@@ -24,7 +22,7 @@ pub fn screenshot(app_handle: &AppHandle, event: Event) {
         if screens.len() <= monitor {
             let _ = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
                 error: format!("Monitor {} not found", payload.unwrap().monitor),
-                image: "".to_string()
+                path: "".to_string()
             });
             return;
         }
@@ -37,7 +35,7 @@ pub fn screenshot(app_handle: &AppHandle, event: Event) {
         if !screen.is_ok() {
             let _ = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
                 error: screen.as_ref().err().unwrap().to_string(),
-                image: "".to_string()
+                path: "".to_string()
             });
             eprintln!("Error capturing screen: {:?}", screen.as_ref().err().unwrap());
             return;
@@ -56,7 +54,7 @@ pub fn screenshot(app_handle: &AppHandle, event: Event) {
         if let Err(e) = screen.save_with_format(path, image::ImageFormat::Png) {
             let _ = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
                 error: e.to_string(),
-                image: "".to_string()
+                path: "".to_string()
             });
             eprintln!("Error saving screen: {:?}", e);
             return;
@@ -64,16 +62,15 @@ pub fn screenshot(app_handle: &AppHandle, event: Event) {
 
         println!("Saved screen: {:?}", path);
 
-        // read the file and encode it to base64
-        let mut file = File::open(path).unwrap();
-        let mut buffer = Vec::new();
-        file.read_to_end(buffer.as_mut()).unwrap();
-        let base64 = general_purpose::STANDARD.encode(buffer.as_slice());
-        let _ = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
+        if let Err(e) = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
             error: "".to_string(),
-            image: base64
-        });
-
-        println!("Emitted screen: {:?}", path);
+            path: path.to_string()
+        }) {
+            let _ = app_handle.emit_all(event::EVENT_SCREENSHOT_RESPONSE, entities::ScreenShotResponsePayload {
+                error: e.to_string(),
+                path: "".to_string()
+            });
+            eprintln!("Error emitting screenshot response event: {}", e);
+        }
     }
 }

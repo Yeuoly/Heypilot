@@ -9,11 +9,16 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/slide',
     name: 'slide' ,
-    component: () => import('../views/slide/Slide.vue')
+    component: () => import('../views/slide/Slide.vue'),
+  },
+  {
+    path: '/test',
+    name: 'test' ,
+    component: () => import('../views/test/Test.vue'),
   },
   {
     path: '/',
-    redirect: '/chat'
+    redirect: '/test'
   }
 ]
 

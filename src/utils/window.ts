@@ -9,14 +9,19 @@ const SLIDE_MODE_WINDOW_SIZE = {
     height: 1200
 }
 
-export const changeToSlideMode = async () => {
+export const changeToSlideMode = async (image?: string) => {
     // get monitor size
     const monitor = await currentMonitor()
     const size = monitor?.size
     if (!size) {
         return
     }
-    router.push('/slide')
+    router.push({
+        path: '/slide',
+        query: {
+            image
+        }
+    })
     emit(Event.EVENT_MOVE_TO_AND_SET_ON_TOP, {
         x: size.width - SLIDE_MODE_WINDOW_SIZE.width,
         y: 0,
