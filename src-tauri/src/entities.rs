@@ -8,10 +8,26 @@ pub struct ScenarioItem {
     pub active: bool
 }
 
-#[derive(Deserialize)]
 #[derive(Serialize)]
 #[derive(Clone)]
 pub struct ScenarioClickPayload {
     pub id: String
 }
 
+
+#[derive(Deserialize)]
+#[derive(Clone)]
+pub struct ScreenShotRequestPayload {
+    pub x: i32,
+    pub y: i32,
+    pub width: i32,
+    pub height: i32,
+    pub monitor: i32
+}
+
+#[derive(Serialize)]
+#[derive(Clone)]
+pub struct ScreenShotResponsePayload {
+    pub error: String,
+    pub image: String
+}
