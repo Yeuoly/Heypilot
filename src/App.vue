@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Chat from './views/chat/Chat.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <Chat />
+  <RouterView></RouterView>
 </template>
 
 <style scoped>

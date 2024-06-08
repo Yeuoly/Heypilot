@@ -31,3 +31,12 @@ pub struct ScreenShotResponsePayload {
     pub error: String,
     pub image: String
 }
+
+#[derive(Deserialize)]
+#[derive(Clone)]
+pub struct MoveToAndSetOnTopPayload {
+    pub width: i32,
+    pub height: i32,
+    pub x: i32,
+    pub y: i32
+}

@@ -7,6 +7,7 @@ mod system_tray;
 mod event;
 mod entities;
 mod screenshot;
+mod window;
 
 fn main() {
     let system_tray_menu = system_tray::create_system_tray([].to_vec());

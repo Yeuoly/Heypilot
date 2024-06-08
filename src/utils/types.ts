@@ -21,6 +21,13 @@ export type SystemScreenShotResponsePayload = {
     image: string;
 }
 
+export type MoveToAndSetOnTopPayload = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+
 export type SetupSystemTrayInf = (items: SystemTrayItem[]) => void;
 
 export type ClearSystemTrayInf = () => void;

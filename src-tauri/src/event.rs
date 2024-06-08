@@ -5,11 +5,14 @@ use tauri::{App, AppHandle, Event, Manager};
 
 use crate::system_tray::create_system_tray;
 use crate::screenshot::screenshot;
+use crate::window::{move_to_and_set_on_top, set_not_on_top};
 
 pub const EVENT_REFRESH_SCENARIOS: &str = "refresh-scenarios";
 pub const EVENT_SCREENSHOT: &str = "screenshot";
 pub const EVENT_SCREENSHOT_RESPONSE: &str = "screenshot-response";
 pub const EVENT_CLICK_SCENARIO: &str = "click-scenario";
+pub const EVENT_MOVE_TO_AND_SET_ON_TOP: &str = "move-to-and-set-on-top";
+pub const EVENT_SET_NOT_ON_TOP: &str = "set-not-on-top";
 pub const EVENT_QUIT: &str = "quit";
 
 pub fn mount_event_listener(app: &mut App) {
@@ -24,6 +27,20 @@ pub fn mount_event_listener(app: &mut App) {
         let app_handle = app.app_handle();
         app.listen_global(EVENT_SCREENSHOT, move |event| {
             screenshot(&app_handle, event);
+        });
+    }
+
+    {
+        let app_handle = app.app_handle();
+        app.listen_global(EVENT_MOVE_TO_AND_SET_ON_TOP, move |event| {
+            move_to_and_set_on_top(&app_handle, event);
+        });
+    }
+
+    {
+        let app_handle = app.app_handle();
+        app.listen_global(EVENT_SET_NOT_ON_TOP, move |event| {
+            set_not_on_top(&app_handle, event);
         });
     }
 }
