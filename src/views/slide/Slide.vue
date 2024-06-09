@@ -58,25 +58,28 @@ import Min from './icons/min.svg'
 import Send from './icons/send.svg'
 import Bot from './icons/bot.svg'
 import User from './icons/user.svg'
-import { useActiveMonitor, useGlobalEvent, useGlobalImageEvent } from './window_events'
+import { useActiveMonitor, useGlobalEvent, useGlobalContextEvent } from './window_events'
 import { useConversation } from './conversation'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const messageContainer = ref<HTMLElement | null>(null)
 const inputContainer = ref<HTMLInputElement | null>(null)
 
+const router = useRouter()
+
 const onHideClick = () => {
-    //router.push('/chat')
-    //hideWindow()
+    router.push('/chat')
+    hideWindow()
 }
 
 const onMaxClick = () => {
     changeToNormalMode()
 }
 
-const { text, onMouseMove } = useActiveMonitor(onHideClick)
-const { attachImages, imagePaths } = useGlobalImageEvent()
-const { messages, sendMessage } = useConversation(messageContainer, text, imagePaths)
+const { attachImages, imagePaths, context, text } = useGlobalContextEvent()
+const { onMouseMove } = useActiveMonitor(context, text, onHideClick)
+const { messages, sendMessage } = useConversation(messageContainer, text, context, imagePaths)
 useGlobalEvent(inputContainer)
 </script>
 

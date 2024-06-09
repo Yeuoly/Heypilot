@@ -1,4 +1,4 @@
-import { FetchImage } from "../../utils/tauri_command"
+import { FetchImage } from "../../utils/image"
 import { MessageFrom } from "./entities"
 
 export class Message {

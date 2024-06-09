@@ -1,14 +1,13 @@
 import { appWindow } from "@tauri-apps/api/window"
 import { Ref, onMounted, onUnmounted, ref, watch } from "vue"
-import { useRoute } from "vue-router"
-import { FetchImage } from "../../utils/tauri_command"
+import { FetchImage } from "../../utils/image"
 import { listen } from "@tauri-apps/api/event"
 import { Event } from "../../event/enum"
+import { getConversationContext, removeReplaceConversationEventListeners, setupReplaceConversationEventListeners } from "../../utils/conversation"
 
-export const useActiveMonitor = (onHideClick: () => void) => {
+export const useActiveMonitor = (context: Ref<string>, text: Ref<string>, onHideClick: () => void) => {
     const timer = ref<any>(null)
     const active = ref(true)
-    const text = ref('')
 
     const startActiveTimer = () => {
         timer.value = setInterval(async () => {
@@ -25,6 +24,10 @@ export const useActiveMonitor = (onHideClick: () => void) => {
         active.value = true
     })
 
+    watch(() => context, () => {
+        active.value = true
+    })
+
     onMounted(() => {
         startActiveTimer()
     })
@@ -36,10 +39,11 @@ export const useActiveMonitor = (onHideClick: () => void) => {
     return { text, onMouseMove }
 }
 
-export const useGlobalImageEvent = () => {
-    const route = useRoute()
+export const useGlobalContextEvent = () => {
     const attachImages = ref<string[]>([])
     const imagePaths = ref<string[]>([])
+    const context = ref('')
+    const text = ref('')
 
     watch(() => imagePaths, async () => {
         attachImages.value = []
@@ -48,15 +52,31 @@ export const useGlobalImageEvent = () => {
         }
     }, { deep: true, immediate: true })
 
-    watch(() => route.query, async () => {
-        const image = route.query.image as string
-        imagePaths.value = []
-        if (image) {
-            imagePaths.value.push(image)
-        }
-    }, { deep: true, immediate: true })
+    let replaceContext: () => void
 
-    return { attachImages, imagePaths }
+    onMounted(async () => {
+        // listen to global event
+        replaceContext = () => {
+            const newContext = getConversationContext()
+
+            if (newContext.context) {
+                context.value = newContext.context
+            }
+            
+            if (newContext.screenshot) {
+                imagePaths.value = [newContext.screenshot]
+            }
+        }
+
+        setupReplaceConversationEventListeners(replaceContext)
+        replaceContext()
+    })
+    
+    onUnmounted(() => {
+        removeReplaceConversationEventListeners(replaceContext)
+    })
+
+    return { text, context, attachImages, imagePaths }
 }
 
 export const useGlobalEvent = (inputContainer: Ref<HTMLInputElement | null>) => {
@@ -64,10 +84,19 @@ export const useGlobalEvent = (inputContainer: Ref<HTMLInputElement | null>) => 
         inputContainer.value?.focus()
     }
 
+    let focusInputUnset: () => void
+
     onMounted(async () => {
-        focusInput()
-        onUnmounted(await listen(Event.EVENT_SLIDE_FOCUS_INPUT, () => {
+        focusInputUnset = await listen(Event.EVENT_SLIDE_FOCUS_INPUT, () => {
             focusInput()
-        }))
+        })
+
+        focusInput()
+    })
+
+    onUnmounted(() => {
+        if (focusInputUnset) {
+            focusInputUnset()
+        }
     })
 }

@@ -2,7 +2,7 @@ import { Ref, onMounted, ref } from "vue"
 import { Conversation } from "../../core/conversation/conversation"
 import { ConversationManager } from "../../core/conversation/manager"
 import { MessageFrom } from "../../core/conversation/entities"
-import { FetchImage } from "../../utils/tauri_command"
+import { FetchImage } from "../../utils/image"
 import { Marked } from "marked"
 import { markedHighlight } from "marked-highlight"
 import { Buffer } from 'buffer'
@@ -23,7 +23,12 @@ const marked = new Marked(markedHighlight({
     }
 }))
 
-export const useConversation = (messageContainer: Ref<HTMLElement | null>, text: Ref<string>, images: Ref<string[]>) => {
+export const useConversation = (
+    messageContainer: Ref<HTMLElement | null>, 
+    text: Ref<string>, 
+    context: Ref<string>,
+    images: Ref<string[]>
+) => {
     let conversation: Conversation | null = null
     const messages = ref<{
         role: 'user' | 'assistant',
@@ -55,7 +60,7 @@ export const useConversation = (messageContainer: Ref<HTMLElement | null>, text:
         }
 
         const event = conversation.ConnectEvent()
-        conversation.StartConversation(text.value, images.value)
+        conversation.StartConversation(context.value, text.value, images.value)
 
         // add user message
         messages.value.push({

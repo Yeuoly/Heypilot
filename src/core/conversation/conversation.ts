@@ -44,7 +44,7 @@ export class Conversation {
         this.event = new EventEmitter()
     }
 
-    async StartConversation(text: string, images: string[]) {
+    async StartConversation(context: string, text: string, images: string[]) {
         const self = this
         const model_instance = await ModelManager.GetModelInstance(this.config.provider, this.config.model)
         const credentials = {
@@ -53,7 +53,8 @@ export class Conversation {
         const prompt_messages: PromptMessage[] = [
             {
                 role: PromptMessageRole.SYSTEM,
-                content: 'You are a helpful assistant'
+                content: 'You are a helpful assistant, following is the context of the conversation:'
+                    + context
             }, 
         ]
 

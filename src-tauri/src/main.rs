@@ -9,6 +9,7 @@ mod entities;
 mod screenshot;
 mod window;
 mod image;
+mod selection;
 
 fn main() {
     let system_tray_menu = system_tray::create_system_tray([].to_vec());
@@ -23,7 +24,8 @@ fn main() {
         .system_tray(SystemTray::new().with_menu(system_tray_menu))
         .on_system_tray_event(|app, event|system_tray::handle_system_tray_event(app, event))
         .invoke_handler(tauri::generate_handler![
-            image::get_image
+            image::get_image,
+            selection::get_selection_text
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
