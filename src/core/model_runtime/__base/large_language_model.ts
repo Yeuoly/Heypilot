@@ -5,6 +5,8 @@ import { AIModelEntity, DefaultParameterName, ParameterRule, ParameterType } fro
 
 export abstract class MessageCallback {
     abstract onMessage(message: LLMResultChunk): void
+
+    abstract onEnd(): void
 }
 
 export class LargeLanguageModel {

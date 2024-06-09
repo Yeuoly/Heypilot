@@ -19,6 +19,9 @@ const onClick = async () => {
     }], {}, [], [], [{
         onMessage(message: LLMResultChunk) {
             console.log(message)
+        },
+        onEnd() {
+            console.log('end')
         }
     }])
 }

@@ -24,5 +24,5 @@ export const screenShot = (payload: SystemScreenShotRequestPayload) => new Promi
 
     timer = setTimeout(() => {
         reject('timeout')
-    }, 5000) as any
+    }, 200000) as any
 })

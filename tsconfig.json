@@ -16,11 +16,12 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "types": [
-      "@modyfi/vite-plugin-yaml/modules"
+      "@modyfi/vite-plugin-yaml/modules",
+      "node"
     ]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],

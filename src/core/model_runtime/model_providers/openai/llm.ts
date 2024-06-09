@@ -65,8 +65,6 @@ export default class OpenAILargeLanguageModel extends LargeLanguageModel {
             }
         })
 
-        console.log(messages)
-        
         const stream = await openai.chat.completions.create({
             model: model,
             messages: messages as any,
@@ -91,5 +89,8 @@ export default class OpenAILargeLanguageModel extends LargeLanguageModel {
                 })
             }
         }
+        callbacks?.forEach((c) => {
+            c.onEnd()
+        })
     }
 }

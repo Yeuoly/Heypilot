@@ -10,4 +10,14 @@
     <div id="app" class="h-full"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
+  <script>
+    function copyToClipboard(content) {
+        const el = document.createElement('textarea');
+        el.value = Buffer.from(content, 'base64').toString('utf-8');
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+  </script>
 </html>
