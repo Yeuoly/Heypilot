@@ -12,18 +12,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/slide/Slide.vue'),
   },
   {
-    path: '/test',
-    name: 'test' ,
-    component: () => import('../views/test/Test.vue'),
-  },
-  {
     path: '/submenu',
     name: 'submenu',
     component: () => import('../views/submenu/Submenu.vue')
   },
   {
     path: '/',
-    redirect: '/test'
+    redirect: '/chat'
   }
 ]
 

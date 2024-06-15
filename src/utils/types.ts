@@ -21,11 +21,8 @@ export type SystemScreenShotResponsePayload = {
     path: string;
 }
 
-export type MoveToAndSetOnTopPayload = {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+export type ReplaceContextWithSelectionResponse = {
+    selection: string;
 }
 
 export type SetupSystemTrayInf = (items: SystemTrayItem[]) => void;

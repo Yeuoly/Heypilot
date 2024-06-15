@@ -3,7 +3,7 @@ export enum Event {
     EVENT_TRAY_CLICK = 'click-scenario',
     EVENT_SCREENSHOT = 'screenshot',
     EVENT_SCREENSHOT_RESPONSE = 'screenshot-response',
-    EVENT_MOVE_TO_AND_SET_ON_TOP = 'move-to-and-set-on-top',
-    EVENT_SET_NOT_ON_TOP = 'set-not-on-top',
     EVENT_SLIDE_FOCUS_INPUT = 'slide-focus-input',
+    EVENT_REPLACE_CONTEXT_WITH_SELECTION = 'replace-context-with-selection',
+    EVENT_REPLACE_CONTEXT_WITH_SELECTION_RESPONSE = 'replace-context-with-selection-response',
 }

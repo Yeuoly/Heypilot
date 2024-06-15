@@ -3,9 +3,10 @@ import { Ref, onMounted, onUnmounted, ref, watch } from "vue"
 import { FetchImage } from "../../utils/image"
 import { listen } from "@tauri-apps/api/event"
 import { Event } from "../../event/enum"
-import { getConversationContext, removeReplaceConversationEventListeners, setupReplaceConversationEventListeners } from "../../utils/conversation"
+import { useChatContext } from "../../utils/context"
 
-export const useActiveMonitor = (context: Ref<string>, text: Ref<string>, onHideClick: () => void) => {
+export const useActiveMonitor = (text: Ref<string>, onHideClick: () => void) => {
+    const { context } = useChatContext()
     const timer = ref<any>(null)
     const active = ref(true)
 
@@ -32,6 +33,10 @@ export const useActiveMonitor = (context: Ref<string>, text: Ref<string>, onHide
         startActiveTimer()
     })
 
+    onUnmounted(() => {
+        clearInterval(timer.value)
+    })
+
     const onMouseMove = () => {
         active.value = true
     }
@@ -39,10 +44,10 @@ export const useActiveMonitor = (context: Ref<string>, text: Ref<string>, onHide
     return { text, onMouseMove }
 }
 
-export const useGlobalContextEvent = () => {
+export const useGlobalContext = () => {
+    const { context } = useChatContext()
     const attachImages = ref<string[]>([])
     const imagePaths = ref<string[]>([])
-    const context = ref('')
     const text = ref('')
 
     watch(() => imagePaths, async () => {
@@ -52,29 +57,13 @@ export const useGlobalContextEvent = () => {
         }
     }, { deep: true, immediate: true })
 
-    let replaceContext: () => void
-
-    onMounted(async () => {
-        // listen to global event
-        replaceContext = () => {
-            const newContext = getConversationContext()
-
-            if (newContext.context) {
-                context.value = newContext.context
-            }
-            
-            if (newContext.screenshot) {
-                imagePaths.value = [newContext.screenshot]
-            }
+    watch(() => context, () => {
+        if (context.value.screenshot) {
+            imagePaths.value = [context.value.screenshot]
+        } else {
+            imagePaths.value = []
         }
-
-        setupReplaceConversationEventListeners(replaceContext)
-        replaceContext()
-    })
-    
-    onUnmounted(() => {
-        removeReplaceConversationEventListeners(replaceContext)
-    })
+    }, { deep: true, immediate: true })
 
     return { text, context, attachImages, imagePaths }
 }

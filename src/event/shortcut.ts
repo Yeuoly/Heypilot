@@ -1,8 +1,6 @@
 import { isRegistered, register } from '@tauri-apps/api/globalShortcut'
-import { appWindow } from '@tauri-apps/api/window'
-import { screenShot } from '../utils/screenshot'
 import { startNewConversation } from '../utils/conversation'
-import { GetSelection } from '../utils/selection'
+import { SyncReplaceContext } from '../utils/context';
 
 window.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -12,21 +10,14 @@ window.addEventListener('DOMContentLoaded', async () => {
             }
         };
     
-        const screenshotAndAction = async (action: (selection?: string, screen?: string) => void) => {
-            const size = await appWindow.outerSize();
-            const screenshot = await screenShot({
-                x: 0,
-                y: 0,
-                width: size.width,
-                height: size.height
-            });
-            const selection = await GetSelection()
-            action(selection, screenshot || undefined);
+        const screenshotAndAction = async (action: () => void) => {
+            SyncReplaceContext(true)
+            action();
         };
     
         await registerShortcut('CommandOrControl+Shift+\'', async () => {
-            const selection = await GetSelection()
-            startNewConversation(selection)
+            SyncReplaceContext(false)
+            startNewConversation()
         });
     
         await registerShortcut('CommandOrControl+Shift+/', async () => {

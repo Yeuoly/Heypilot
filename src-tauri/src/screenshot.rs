@@ -3,7 +3,7 @@ use tauri::api::path::data_dir;
 
 use tauri::{AppHandle, Event, Manager};
 use xcap::image::{DynamicImage, GenericImageView};
-use xcap::Monitor;
+use xcap::{Monitor};
 
 use crate::{entities, event};
 

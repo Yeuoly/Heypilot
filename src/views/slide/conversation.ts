@@ -8,6 +8,7 @@ import { markedHighlight } from "marked-highlight"
 import { Buffer } from 'buffer'
 import hljs from "highlight.js"
 import "highlight.js/styles/atom-one-dark.css"
+import { useChatContext } from "../../utils/context"
 
 window.Buffer = Buffer
 
@@ -26,7 +27,6 @@ const marked = new Marked(markedHighlight({
 export const useConversation = (
     messageContainer: Ref<HTMLElement | null>, 
     text: Ref<string>, 
-    context: Ref<string>,
     images: Ref<string[]>
 ) => {
     let conversation: Conversation | null = null
@@ -36,6 +36,8 @@ export const useConversation = (
         marked_content: string,
         images: string[]
     }[]>([])
+
+    const { context } = useChatContext()
 
     const refreshMessages = async () => {
         messages.value = []
@@ -60,7 +62,7 @@ export const useConversation = (
         }
 
         const event = conversation.ConnectEvent()
-        conversation.StartConversation(context.value, text.value, images.value)
+        conversation.StartConversation(context.value.context, text.value, images.value)
 
         // add user message
         messages.value.push({

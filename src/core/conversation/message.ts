@@ -18,6 +18,7 @@ export class Message {
 
     async FetchImages() {
         const images = []
+        console.log(this.images)
         for (const image of this.images) {
             images.push(await FetchImage(image))
         }

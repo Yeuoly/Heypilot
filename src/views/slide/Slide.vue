@@ -29,9 +29,26 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full p-2">
-                <div class="w-full pb-2" v-if="attachImages.length">
-                    <img v-for="image in attachImages" :src="image" alt="screenshot" class="h-10 rounded-lg">
+            <div class="w-full p-1">
+                <div class="w-full mb-1" v-if="attachImages.length">
+                    <div v-for="(image, index) in attachImages" :key="index" class="relative inline-block mr-2">
+                        <img :src="image" alt="screenshot" class="h-10 w-20 rounded-lg object-cover">
+                        <div @click="removeImage()" class="absolute top-0 w-full h-full text-center opacity-0 hover:opacity-50 cursor-pointer transition bg-gray-700 rounded-lg">
+                            <div class="h-full flex items-center justify-center">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
+                                    <Remove class="w-8 h-8" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full flex p-2 bg-gray-800 rounded-lg mb-1" v-if="context.context.length">
+                    <div class="w-6">
+                        <Docs class="w-5" />
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        Context ({{ context.context.length }} characters)
+                    </div>
                 </div>
                 <div class="w-full flex">
                     <div class="w-6 cursor-pointer" @click="onMaxClick">
@@ -42,7 +59,7 @@
                             class="w-full bg-transparent text-white placeholder-gray-400 focus:outline-none"
                             placeholder="Type your question" v-model="text" @keydown.enter="sendMessage">
                     </div>
-                    <div class="w-4">
+                    <div class="w-5">
                         <Send class="w-5" />
                     </div>
                 </div>
@@ -52,35 +69,43 @@
 </template>
 
 <script setup lang="ts">
-import { changeToNormalMode } from '../../utils/chat_mode'
+import { changeToNormalMode } from '../../utils/chat'
 import Max from './icons/max.svg'
 import Min from './icons/min.svg'
 import Send from './icons/send.svg'
 import Bot from './icons/bot.svg'
 import User from './icons/user.svg'
-import { useActiveMonitor, useGlobalEvent, useGlobalContextEvent } from './window_events'
+import Remove from './icons/remove.svg'
+import Docs from './icons/docs.svg'
+import { useActiveMonitor, useGlobalEvent, useGlobalContext } from './window_events'
 import { useConversation } from './conversation'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { hideWindow } from '../../utils/window'
+import { useChatContext } from '../../utils/context'
 
 const messageContainer = ref<HTMLElement | null>(null)
 const inputContainer = ref<HTMLInputElement | null>(null)
+const { context } = useChatContext()
 
 const router = useRouter()
 
 const onHideClick = () => {
-    router.push('/chat')
-    hideWindow()
+    // router.push('/chat')
+    // hideWindow()
 }
 
 const onMaxClick = () => {
     changeToNormalMode()
 }
 
-const { attachImages, imagePaths, context, text } = useGlobalContextEvent()
-const { onMouseMove } = useActiveMonitor(context, text, onHideClick)
-const { messages, sendMessage } = useConversation(messageContainer, text, context, imagePaths)
+const removeImage = () => {
+    context.value.screenshot = ''
+}
+
+const { attachImages, imagePaths, text } = useGlobalContext()
+const { onMouseMove } = useActiveMonitor(text, onHideClick)
+const { messages, sendMessage } = useConversation(messageContainer, text, imagePaths)
 useGlobalEvent(inputContainer)
 </script>
 

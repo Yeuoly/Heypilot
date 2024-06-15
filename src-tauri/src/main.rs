@@ -24,7 +24,6 @@ fn main() {
         .on_system_tray_event(|app, event|system_tray::handle_system_tray_event(app, event))
         .invoke_handler(tauri::generate_handler![
             image::get_image,
-            selection::get_selection_text
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

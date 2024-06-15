@@ -21,7 +21,12 @@
         "all": true
       },
       "window": {
-        "hide": true
+        "show": true,
+        "hide": true,
+        "setPosition": true,
+        "setSize": true,
+        "setDecorations": true,
+        "setAlwaysOnTop": true
       }
     },
     "systemTray": {

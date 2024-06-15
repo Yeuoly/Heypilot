@@ -3,6 +3,7 @@
 
 use tauri::{App, AppHandle, Event, Manager};
 
+use crate::selection::replace_context_with_selection;
 use crate::system_tray::create_system_tray;
 use crate::screenshot::screenshot;
 
@@ -11,6 +12,8 @@ pub const EVENT_SCREENSHOT: &str = "screenshot";
 pub const EVENT_SCREENSHOT_RESPONSE: &str = "screenshot-response";
 pub const EVENT_CLICK_SCENARIO: &str = "click-scenario";
 pub const EVENT_QUIT: &str = "quit";
+pub const EVENT_REPLACE_CONTEXT_WITH_SELECTION: &str = "replace-context-with-selection";
+pub const EVENT_REPLACE_CONTEXT_WITH_SELECTION_RESPONSE: &str = "replace-context-with-selection-response";
 
 pub fn mount_event_listener(app: &mut App) {
     {
@@ -24,6 +27,13 @@ pub fn mount_event_listener(app: &mut App) {
         let app_handle = app.app_handle();
         app.listen_global(EVENT_SCREENSHOT, move |event| {
             screenshot(&app_handle, event);
+        });
+    }
+
+    {
+        let app_handle = app.app_handle();
+        app.listen_global(EVENT_REPLACE_CONTEXT_WITH_SELECTION, move |event| {
+            replace_context_with_selection(&app_handle, event);
         });
     }
 }
