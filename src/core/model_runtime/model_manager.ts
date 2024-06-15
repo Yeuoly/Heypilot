@@ -1,27 +1,35 @@
 import { GetData, SetData } from "../../utils/store"
 import { LargeLanguageModel } from "./__base/large_language_model"
 import { AIModelEntity } from "./__base/model_entities"
+import { ProviderEntity } from "./__base/provider_entities"
 
 export namespace ModelManager {
     const model_instances: Map<string, LargeLanguageModel> = new Map()
     const model_credentials: Map<string, any> = new Map()
+    const provider_entities: Map<string, ProviderEntity> = new Map()
 
     const model_files = import.meta.glob('./model_providers/**/*.yaml', { eager: true, import: 'default' }) as Record<string, any>
     const provider_modules = import.meta.glob('./model_providers/**/*.ts', { eager: true, import: 'default' }) as Record<string, LargeLanguageModel>
-
     const llm_entities: Map<string, AIModelEntity[]> = new Map()
 
     for (const model_name in model_files) {
         // extract provider and model name
         const parts = model_name.split('/')
         const provider = parts[2]
+        const model_name_part = parts[3].split('.')[0]
 
-        if (!llm_entities.has(provider)) {
-            llm_entities.set(provider, [])
+        console.log(model_name_part, provider)
+
+        if (model_name_part !== provider) {
+            if (!llm_entities.has(provider)) {
+                llm_entities.set(provider, [])
+            }
+    
+            const model_entity = model_files[model_name]
+            llm_entities.get(provider)?.push(model_entity)
+        } else {
+            provider_entities.set(provider, model_files[model_name] as ProviderEntity)
         }
-
-        const model_entity = model_files[model_name]
-        llm_entities.get(provider)?.push(model_entity)
     }
 
     llm_entities.forEach((models, provider) => {
@@ -78,5 +86,9 @@ export namespace ModelManager {
         }
 
         return credentials
+    }
+
+    export const ListProviders = () => {
+        return Array.from(provider_entities.values())
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-screen bg-black text-white">
-    <div class="w-1/5 bg-gray-950 p-4 pt-2">
+    <div class="w-1/5 bg-gray-950 p-2 pt-2">
       <History />
     </div>
     <div class="flew-grow bg-gray-800 flex flex-col space-y-4 w-full">
