@@ -1,49 +1,24 @@
-import { emit } from '@tauri-apps/api/event'
-import { currentMonitor, appWindow } from '@tauri-apps/api/window'
-import { MoveToAndSetOnTopPayload } from './types'
-import { Event } from '../event/enum'
-import { router } from '../router/index'
+import { appWindow, LogicalSize, LogicalPosition } from '@tauri-apps/api/window'
 
-const SLIDE_MODE_WINDOW_SIZE = {
+export const SLIDE_MODE_WINDOW_SIZE = {
     width: 800,
     height: 1200
 }
 
-export const changeToSlideMode = async (image?: string) => {
-    // get monitor size
-    const monitor = await currentMonitor()
-    const size = monitor?.size
-    if (!size) {
-        return
-    }
-    router.push({
-        path: '/slide',
-        query: {
-            image
-        }
-    })
-    emit(Event.EVENT_MOVE_TO_AND_SET_ON_TOP, {
-        x: size.width - SLIDE_MODE_WINDOW_SIZE.width,
-        y: 0,
-        width: SLIDE_MODE_WINDOW_SIZE.width,
-        height: SLIDE_MODE_WINDOW_SIZE.height
-    } as MoveToAndSetOnTopPayload)
+export const setOnTop = async () => {
+    await appWindow.setAlwaysOnTop(true)
 }
 
-export const changeToNormalMode = async () => {
-    const monitor = await currentMonitor()
-    const size = monitor?.size
-    if (!size) {
-        return
-    }
-    router.push('/chat')
-    emit(Event.EVENT_MOVE_TO_AND_SET_ON_TOP, {
-        x: 0,
-        y: 0,
-        width: size.width,
-        height: size.height
-    } as MoveToAndSetOnTopPayload)
-    emit(Event.EVENT_SET_NOT_ON_TOP, {})
+export const setNotOnTop = async () => {
+    await appWindow.setAlwaysOnTop(false)
+}
+
+export const moveWindow = async (x: number, y: number) => {
+    await appWindow.setPosition(new LogicalPosition(x, y))
+}
+
+export const resizeWindow = async (width: number, height: number) => {
+    await appWindow.setSize(new LogicalSize(width, height))
 }
 
 export const hideWindow = () => {

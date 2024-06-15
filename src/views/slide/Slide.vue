@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { changeToNormalMode, hideWindow } from '../../utils/window'
+import { changeToNormalMode } from '../../utils/chat_mode'
 import Max from './icons/max.svg'
 import Min from './icons/min.svg'
 import Send from './icons/send.svg'
@@ -62,6 +62,7 @@ import { useActiveMonitor, useGlobalEvent, useGlobalContextEvent } from './windo
 import { useConversation } from './conversation'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { hideWindow } from '../../utils/window'
 
 const messageContainer = ref<HTMLElement | null>(null)
 const inputContainer = ref<HTMLInputElement | null>(null)

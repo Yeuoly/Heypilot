@@ -7,7 +7,6 @@ mod system_tray;
 mod event;
 mod entities;
 mod screenshot;
-mod window;
 mod image;
 mod selection;
 

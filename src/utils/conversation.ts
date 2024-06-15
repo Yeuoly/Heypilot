@@ -1,4 +1,4 @@
-import { changeToSlideMode } from "./window"
+import { changeToSlideMode } from "./chat_mode"
 import { EventEmitter } from 'events'
 
 const conversationContext ={
