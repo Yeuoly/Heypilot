@@ -3,7 +3,7 @@
     <div class="w-1/5 bg-gray-950 p-2 pt-2">
       <History />
     </div>
-    <div class="flew-grow bg-gray-800 flex flex-col space-y-4 w-full">
+    <div class="w-3/5 bg-gray-800 flex flex-col space-y-4 w-full">
       <div class="flex-grow overflow-y-auto">
         <Messages />
       </div>

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import Context from './utils/context.vue'
+import SetupModel from './views/setup_model/SetupModel.vue'
 </script>
 
 <template>
   <Context>
-    <RouterView></RouterView>
+    <SetupModel>
+      <RouterView></RouterView>
+    </SetupModel>
   </Context>
 </template>
 

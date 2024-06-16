@@ -91,4 +91,13 @@ export namespace ModelManager {
     export const ListProviders = () => {
         return Array.from(provider_entities.values())
     }
+
+    export const GetProvider = (provider: string) => {
+        const provider_entity = provider_entities.get(provider)
+        if (!provider_entity) {
+            throw new Error(`Provider ${provider} is not found`)
+        }
+
+        return provider_entity
+    }
 }
