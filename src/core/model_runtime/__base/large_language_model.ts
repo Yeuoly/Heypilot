@@ -7,6 +7,8 @@ export abstract class MessageCallback {
     abstract onMessage(message: LLMResultChunk): void
 
     abstract onEnd(): void
+
+    abstract onError(e: any): void
 }
 
 export class LargeLanguageModel {
@@ -21,6 +23,10 @@ export class LargeLanguageModel {
             tools?: PromptMessageTool[], stop?: string[],
             callbacks?: MessageCallback[]): void {}
 
+    _validate_credentials(model: string, credentials: { [key: string]: string; }): Promise<boolean> {
+        return Promise.reject<boolean>()
+    }
+
     invoke(model: string, credentials: {[key: string]: string}, 
         prompt_messages: PromptMessage[], model_parameters: {[key: string]: any},
         tools?: PromptMessageTool[], stop?: string[],
@@ -32,6 +38,10 @@ export class LargeLanguageModel {
 
         model_parameters = this._validate_and_filter_model_parameters(model, model_parameters, credentials)
         this._invoke(model, credentials, prompt_messages, model_parameters, tools, stop, callbacks)
+    }
+
+    validate_credentials(model: string, credentials: { [key: string]: string; }) {
+        return this._validate_credentials(model, credentials)
     }
 
     _validate_and_filter_model_parameters(model: string, model_parameters: {[key: string]: any}, 

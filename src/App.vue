@@ -2,13 +2,16 @@
 import { RouterView } from 'vue-router'
 import Context from './utils/context.vue'
 import SetupModel from './views/setup_model/SetupModel.vue'
+import SnakeMessage from './views/message_box/Snake.vue'
 </script>
 
 <template>
   <Context>
-    <SetupModel>
-      <RouterView></RouterView>
-    </SetupModel>
+    <SnakeMessage>
+      <SetupModel>
+        <RouterView></RouterView>
+      </SetupModel>
+    </SnakeMessage>
   </Context>
 </template>
 

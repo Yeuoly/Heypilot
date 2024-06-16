@@ -113,6 +113,9 @@ export class Conversation {
                     self.histories.push(user_message)
                     self.histories.push(assistant_message)
                     SaveConversation()
+                },
+                onError(e) {
+                    
                 }
             }]
         )

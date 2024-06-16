@@ -21,7 +21,6 @@ const props = defineProps({
     type: {
         type: String as PropType<InputTypeHTMLAttribute>,
         default: 'text',
-        required: true,
     }
 })
 </script>

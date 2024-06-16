@@ -39,7 +39,10 @@
                     </template>
                 </div>
                 <div v-else-if="setup_method == 'model'">
-                    <template v-for="schema in provider_entity?.model_credential_schema?.credential_form_schemas">
+                    <template v-for="schema in [
+                        modelSchema,
+                        ...provider_entity?.model_credential_schema?.credential_form_schemas || []
+                    ]">
                         <div class="text-sm text-white pt-1 text-white">
                             {{ schema.label.en_US }}
                         </div>
@@ -49,7 +52,7 @@
                     </template>
                 </div>
                 <div class="py-2">
-                    <button class="text-white bg-gray-900 hover:bg-gray-700 p-2 px-5 rounded-md">Setup</button>
+                    <button @click="setupCredentials" class="text-white bg-gray-900 hover:bg-gray-700 p-2 px-5 rounded-md">Setup</button>
                 </div>
             </div>
         </div>
@@ -57,14 +60,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import Close from './icons/close.svg'
 import { SetupModelEvent } from '.'
 import { ModelManager } from '../../core/model_runtime/model_manager'
 import { CredentialFormSchema, FormType, ProviderEntity } from '../../core/model_runtime/__base/provider_entities'
 import SchemaInput from '../../components/schema_input/SchemaInput.vue'
 import RadioInput from '../../components/schema_input/RadioInput.vue'
+import { useSnakeMessage } from '../message_box/snake'
 
+const { openSnakeMessage } = useSnakeMessage()
 const show = ref(false)
 const provider = ref('')
 const provider_entity = ref<ProviderEntity | null>(null)
@@ -79,24 +84,45 @@ const modelSchema: CredentialFormSchema = {
     type: FormType.TEXT_INPUT,
     required: true,
     max_length: 100,
+    placeholder: {
+        en_US: 'Model Name'
+    },
     show_on: [],
 }
 
-const refreshProvider = () => {
+const refreshProvider = async () => {
     if (provider.value === '') {
         return
     }
+
     try {
         provider_entity.value = ModelManager.GetProvider(provider.value)
         // setup model credential
-        model_credential.value = {}
+        try {
+            if (setup_method.value == 'provider') {
+                model_credential.value = await ModelManager.GetProviderCredentials(
+                    provider_entity.value.provider
+                )
+            } else {
+                model_credential.value = await ModelManager.GetModelCredentials(
+                    provider_entity.value.provider,
+                    model_credential.value['model']
+                )
+            }
+        } catch (e) {
+            model_credential.value = {}
+        }
 
         for (const schema of provider_entity.value?.model_credential_schema?.credential_form_schemas || []) {
-            model_credential.value[schema.variable] = ''
+            if (!model_credential.value[schema.variable]) {
+                model_credential.value[schema.variable] = ''
+            }
         }
 
         for (const schema of provider_entity.value?.provider_credential_schema?.credential_form_schemas || []) {
-            model_credential.value[schema.variable] = ''
+            if (!model_credential.value[schema.variable]) {
+                model_credential.value[schema.variable] = ''
+            }
         }
 
         if (provider_entity.value?.model_credential_schema?.credential_form_schemas) {
@@ -104,6 +130,48 @@ const refreshProvider = () => {
         }
     } catch (e) {
     }
+}
+
+const validateCredentials = async () => {
+    if (setup_method.value == 'provider') {
+        await ModelManager.ValidateProviderCredentials(
+            provider.value,
+            model_credential.value
+        )
+    } else {
+        await ModelManager.ValidateModelCredentials(
+            provider.value,
+            model_credential.value['model'],
+            model_credential.value
+        )
+    }
+}
+
+const setupCredentials = async () => {
+    try {
+        await validateCredentials()
+    } catch (e: any) {
+        openSnakeMessage({
+            message: e,
+            type: 'error'
+        })
+        return
+    }
+
+    if (setup_method.value == 'provider') {
+        await ModelManager.AddProviderCredentials(
+            provider.value,
+            model_credential.value
+        )
+    } else {
+        await ModelManager.AddModelProviderCredentials(
+            provider.value,
+            model_credential.value['model'],
+            model_credential.value
+        )
+    }
+
+    onClose()
 }
 
 onMounted(() => {
@@ -119,4 +187,9 @@ const onClose = () => {
     show.value = false
     provider_entity.value = null
 }
+
+watch(() => setup_method.value, () => {
+    refreshProvider()
+})
+
 </script>

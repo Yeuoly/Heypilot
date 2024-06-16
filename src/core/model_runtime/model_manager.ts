@@ -5,7 +5,9 @@ import { ProviderEntity } from "./__base/provider_entities"
 
 export namespace ModelManager {
     const model_instances: Map<string, LargeLanguageModel> = new Map()
+    const provider_instances: Map<string, LargeLanguageModel> = new Map()
     const model_credentials: Map<string, any> = new Map()
+    const provider_credentials: Map<string, any> = new Map()
     const provider_entities: Map<string, ProviderEntity> = new Map()
 
     const model_files = import.meta.glob('./model_providers/**/*.yaml', { eager: true, import: 'default' }) as Record<string, any>
@@ -42,27 +44,47 @@ export namespace ModelManager {
         const model_instance = new model_module(models)
         for (const model of models) {
             model_instances.set(`${provider}/${model.model}`, model_instance)
+            provider_instances.set(provider, model_instance)
         }
     })
 
     const InitModelCredentials = async () => {
-        const data = await GetData<any>('provider_credentials')
-        for (const provider of data) {
-            model_credentials.set(provider.provider, provider)
+        const data = await GetData<{
+            [key: string]: any
+        }>('models_credentials', {})
+        for (const provider in data) {
+            model_credentials.set(provider, data[provider])
+        }
+
+        const provider_data = await GetData<{
+            [key: string]: any
+        }>('provider_credentials', {})
+        for (const provider in provider_data) {
+            provider_credentials.set(provider, provider_data[provider])
         }
     }
 
-    export const AddModelCredentials = async (provider: string, credentials: any) => {
-        model_credentials.set(provider, credentials)
+    export const AddProviderCredentials = async (provider: string, credentials: any) => {
+        provider_credentials.set(provider, credentials)
+        const data: any = {}
+        provider_credentials.forEach((value, key) => {
+            data[key] = value
+        })
+
+        await SetData('provider_credentials', data)
+    }
+
+    export const AddModelProviderCredentials = async (provider: string, model: string, credentials: any) => {
+        model_credentials.set(`${provider}/${model}`, credentials)
         const data: any = {}
         model_credentials.forEach((value, key) => {
             data[key] = value
         })
 
-        SetData('provider_credentials', data)
+        await SetData('models_credentials', data)
     }
 
-    export const GetModelInstance = async (
+    export const GetModelInstance = (
         provider: string, model: string
     ) => {
         const instance = model_instances.get(`${provider}/${model}`)
@@ -73,19 +95,60 @@ export namespace ModelManager {
         return instance
     }
 
+    export const GetProviderInstance = (
+        provider: string
+    ) => {
+        const instance = provider_instances.get(provider)
+        if (!instance) {
+            throw new Error(`Provider ${provider} is not found`)
+        }
+
+        return instance
+    }
+
     export const GetProviderCredentials = async (
         provider: string
     ) => {
-        if (model_credentials.size == 0) {
-            await InitModelCredentials()
-        }
+        await InitModelCredentials()
 
-        const credentials = model_credentials.get(provider)
+        const credentials = provider_credentials.get(provider)
         if (!credentials) {
             throw new Error(`Provider ${provider} is not found`)
         }
 
         return credentials
+    }
+
+    export const GetModelCredentials = async (
+        provider: string, model: string
+    ) => {
+        await InitModelCredentials()
+
+        const credentials = model_credentials.get(`${provider}/${model}`)
+        if (!credentials) {
+            throw new Error(`Model ${model} is not found in provider ${provider}`)
+        }
+
+        return credentials
+    }
+
+    export const ListModelsCredentials = async (provider: string) => {
+        await InitModelCredentials()
+
+        return Object.fromEntries([...model_credentials].filter(([key]) => key.startsWith(provider)))
+    }
+
+    export const CountAliveModels = async (provider: string) => {
+        let count = 0
+        try {
+            await GetProviderCredentials(provider)
+            const provider_instance = GetProviderInstance(provider)
+            count += provider_instance.model_schemas.length
+        } catch (e) {}
+
+        count += Object.keys((await ListModelsCredentials(provider))).length
+        
+        return count
     }
 
     export const ListProviders = () => {
@@ -99,5 +162,36 @@ export namespace ModelManager {
         }
 
         return provider_entity
+    }
+
+    export const ValidateModelCredentials = async (provider: string, model: string, credentials: any) => {
+        const llm = GetProviderInstance(provider)
+        const new_credentials = {
+            ...credentials
+        }
+        try {
+            delete new_credentials['model']
+        } catch (e) {}
+        await llm.validate_credentials(model, credentials)
+    }
+
+    export const ValidateProviderCredentials = async (provider: string, credentials: any) => {
+        const llm = GetProviderInstance(provider)
+        // get cheapest model
+        let cheapest: AIModelEntity = llm.model_schemas[0]
+
+        for (const model of llm.model_schemas) {
+            if (!model.pricing || !cheapest.pricing) {
+                cheapest = model
+                continue
+            }
+
+            if (model.pricing?.input < cheapest.pricing?.input) {
+                cheapest = model
+                continue
+            }
+        }
+
+        await llm.validate_credentials(cheapest.model, credentials)
     }
 }

@@ -4,18 +4,22 @@
             <div class="flex">
                 <div class="flex-grow">
                     <div class="font-semibold text-xl">
-                        {{ provider.label.en_US }}
+                        {{ provider.provider.label.en_US }}
                     </div>
                     <div class="text-sm pt-2">
-                        {{ provider.description?.en_US }}
+                        {{ provider.provider.description?.en_US }}
                     </div>
                 </div>
                 <div class="w-40 h-8 border border-1 border-blue-700 rounded-lg">
                     <div class="p-1 bg-grey-700 flex items-center cursor-pointer"
-                        @click="setupModel(provider.provider)">
-                        <div class="bg-green-400 ml-2 w-2 h-2 rounded-full"></div>
-                        <div class="pl-2 text-center text-sm text-white-100">
-                            1 models alive
+                        @click="setupModel(provider.provider.provider)">
+                        <div v-if="provider.alive" class="bg-green-400 ml-2 w-2 h-2 rounded-full"></div>
+                        <div v-else class="bg-red-400 ml-2 w-2 h-2 rounded-full"></div>
+                        <div v-if="provider.alive" class="pl-2 text-center text-sm text-white-100">
+                            {{ provider.alive }} models alive
+                        </div>
+                        <div v-else class="pl-2 flex-grow text-center text-sm text-white-100">
+                            Setup
                         </div>
                     </div>
                 </div>
@@ -30,10 +34,18 @@ import { ModelManager } from '../../../../core/model_runtime/model_manager'
 import { ProviderEntity } from '../../../../core/model_runtime/__base/provider_entities'
 import { SetupModel } from '../../../setup_model'
 
-const providers = ref<ProviderEntity[]>([])
+const providers = ref<{
+    provider: ProviderEntity,
+    alive: number
+}[]>([])
 
-onMounted(() => {
-    providers.value = ModelManager.ListProviders()
+onMounted(async () => {
+    providers.value = await Promise.all(ModelManager.ListProviders().map(async provider => {
+        return {
+            provider: provider,
+            alive: await ModelManager.CountAliveModels(provider.provider)
+        }
+    }))
 })
 
 const setupModel = (provider: string) => {

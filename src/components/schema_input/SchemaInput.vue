@@ -7,6 +7,10 @@
             }))" />
         </template>
         <template v-else-if="schema.type == FormType.SELECT">
+            <SelectInput v-model="model" :options="schema.options?.map(v => ({
+                label: v.label.en_US,
+                value: v.value
+            }))" />
         </template>
         <template v-else-if="schema.type == FormType.TEXT_INPUT">
             <CommonInput v-model="model" :placeholder="schema.placeholder?.en_US" />
@@ -23,8 +27,9 @@ import { PropType } from 'vue'
 import { CredentialFormSchema, FormType } from '../../core/model_runtime/__base/provider_entities'
 import RadioInput from './RadioInput.vue'
 import CommonInput from './CommonInput.vue'
+import SelectInput from './SelectInput.vue'
 
-const prop = defineProps({
+defineProps({
     schema: {
         type: Object as PropType<CredentialFormSchema>,
         required: true
