@@ -1,7 +1,7 @@
 <template>
     <slot></slot>
-    <div v-if="show" class="absolute bg-gray-900 top-0 left-0 w-full h-full opacity-80 z-index-100"></div>
-    <div v-if="show" class="absolute top-0 left-0 w-full h-full z-index-100">
+    <div v-if="show" class="absolute bg-gray-900 top-0 left-0 w-full h-full opacity-80"></div>
+    <div v-if="show" class="absolute top-0 left-0 w-full h-full">
         <div class="flex justify-center items-center h-full shadow-lg">
             <div class="bg-gray-800 opacity-100 p-4 rounded-xl w-2/3">
                 <div class="flex flex-row-reverse">
