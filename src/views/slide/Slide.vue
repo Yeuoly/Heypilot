@@ -100,7 +100,7 @@ const onMaxClick = () => {
     changeToNormalMode()
 }
 
-const removeImage = () => {
+const removeImage = () => { 
     context.value.screenshot = ''
 }
 
