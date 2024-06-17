@@ -1,19 +1,16 @@
 import { PromptMessage, PromptMessageContentType, PromptMessageImageContent, PromptMessageRole, PromptMessageTool } from "../../__base/entities"
-import { LargeLanguageModel, MessageCallback } from "../../__base/large_language_model"
+import { LLMInvokePayload, LargeLanguageModel, MessageCallback } from "../../__base/large_language_model"
 import OpenAI from 'openai'
 
 export default class OpenAILargeLanguageModel extends LargeLanguageModel {
-    _invoke(model: string, credentials: { [key: string]: string; }, 
-        prompt_messages: PromptMessage[], model_parameters: { [key: string]: any; }, 
-        tools?: PromptMessageTool[] | undefined, stop?: string[] | undefined, 
-        callbacks?: MessageCallback[] | undefined): void {
+    _invoke(p: LLMInvokePayload): void {
         const openai = new OpenAI({
-            baseURL: credentials['base_url'] || 'https://api.openai.com/v1',
-            apiKey: credentials['openai_api_key'],
+            baseURL: p.credentials['base_url'] || 'https://api.openai.com/v1',
+            apiKey: p.credentials['openai_api_key'],
             dangerouslyAllowBrowser: true
         })
 
-        this._invoke_openai(model, openai, prompt_messages, model_parameters, tools, stop, callbacks)
+        this._invoke_openai(p.model, openai, p.prompt_messages, p.model_parameters, p.tools, p.stop, p.callbacks)
     }
 
     _validate_credentials(model: string, credentials: { [key: string]: string; }) {
@@ -23,18 +20,24 @@ export default class OpenAILargeLanguageModel extends LargeLanguageModel {
 
         return new Promise<boolean>((resolve, reject) => {
             try {
-                this._invoke(model, credentials, [{
-                    role: PromptMessageRole.USER,
-                    content: 'ping'
-                }], {}, [], [], [{
-                    onMessage(m) {},
-                    onEnd() {
-                        resolve(true)
-                    },
-                    onError(e) {
-                        reject(e)
-                    }
-                }])
+                this._invoke({
+                    model: model,
+                    credentials: credentials,
+                    prompt_messages: [{
+                        role: PromptMessageRole.USER,
+                        content: 'ping'
+                    }],
+                    model_parameters: {},
+                    callbacks: [{
+                        onMessage(m) {},
+                        onEnd() {
+                            resolve(true)
+                        },
+                        onError(e) {
+                            reject(e)
+                        }
+                    }]
+                })
             } catch (e) {
                 reject(e)
             }

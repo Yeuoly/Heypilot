@@ -17,6 +17,9 @@ dependencies:
   buffer:
     specifier: ^6.0.3
     version: registry.npmmirror.com/buffer@6.0.3
+  dexie:
+    specifier: ^4.0.7
+    version: registry.npmmirror.com/dexie@4.0.7
   events:
     specifier: ^3.3.0
     version: registry.npmmirror.com/events@3.3.0
@@ -35,6 +38,9 @@ dependencies:
   openai:
     specifier: ^4.49.1
     version: registry.npmmirror.com/openai@4.49.1
+  pinia:
+    specifier: ^2.1.7
+    version: registry.npmmirror.com/pinia@2.1.7(typescript@5.4.5)(vue@3.4.27)
   tauri-plugin-store-api:
     specifier: github:tauri-apps/tauri-plugin-store#v1
     version: github.com/tauri-apps/tauri-plugin-store/51717bbde4101f44d3e2191907419f6f7085e2ef
@@ -1335,6 +1341,12 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
+  registry.npmmirror.com/dexie@4.0.7:
+    resolution: {integrity: sha512-M+Lo6rk4pekIfrc2T0o2tvVJwL6EAAM/B78DNfb8aaxFVoI1f8/rz5KTxuAnApkwqTSuxx7T5t0RKH7qprapGg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/dexie/-/dexie-4.0.7.tgz}
+    name: dexie
+    version: 4.0.7
+    dev: false
+
   registry.npmmirror.com/didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/didyoumean/-/didyoumean-1.2.2.tgz}
     name: didyoumean
@@ -1988,6 +2000,27 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  registry.npmmirror.com/pinia@2.1.7(typescript@5.4.5)(vue@3.4.27):
+    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pinia/-/pinia-2.1.7.tgz}
+    id: registry.npmmirror.com/pinia/2.1.7
+    name: pinia
+    version: 2.1.7
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': registry.npmmirror.com/@vue/devtools-api@6.6.3
+      typescript: registry.npmmirror.com/typescript@5.4.5
+      vue: registry.npmmirror.com/vue@3.4.27(typescript@5.4.5)
+      vue-demi: registry.npmmirror.com/vue-demi@0.14.8(vue@3.4.27)
+    dev: false
+
   registry.npmmirror.com/pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pirates/-/pirates-4.0.6.tgz}
     name: pirates
@@ -2447,6 +2480,24 @@ packages:
     optionalDependencies:
       fsevents: registry.npmmirror.com/fsevents@2.3.3
     dev: true
+
+  registry.npmmirror.com/vue-demi@0.14.8(vue@3.4.27):
+    resolution: {integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.8.tgz}
+    id: registry.npmmirror.com/vue-demi/0.14.8
+    name: vue-demi
+    version: 0.14.8
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: registry.npmmirror.com/vue@3.4.27(typescript@5.4.5)
+    dev: false
 
   registry.npmmirror.com/vue-router@4.0.13(vue@3.4.27):
     resolution: {integrity: sha512-LmXrC+BkDRLak+d5xTMgUYraT3Nj0H/vCbP+7usGvIl9Viqd1UP6AsP0i69pSbn9O0dXK/xCdp4yPw21HqV9Jw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vue-router/-/vue-router-4.0.13.tgz}

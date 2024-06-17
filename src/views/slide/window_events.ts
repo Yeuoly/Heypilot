@@ -5,7 +5,7 @@ import { listen } from "@tauri-apps/api/event"
 import { Event } from "../../event/enum"
 import { useChatContext } from "../../utils/context"
 
-export const useActiveMonitor = (text: Ref<string>, onHideClick: () => void) => {
+export const useActiveMonitor = (text: Ref<string>, messages: Ref<any>, onHideClick: () => void) => {
     const { context } = useChatContext()
     const timer = ref<any>(null)
     const active = ref(true)
@@ -28,6 +28,10 @@ export const useActiveMonitor = (text: Ref<string>, onHideClick: () => void) => 
     watch(() => context, () => {
         active.value = true
     })
+
+    watch(() => messages, () => {
+        active.value = true
+    }, { deep: true })
 
     onMounted(() => {
         startActiveTimer()

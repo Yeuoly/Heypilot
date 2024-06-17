@@ -51,8 +51,16 @@
                         </div>
                     </template>
                 </div>
-                <div class="py-2">
-                    <button @click="setupCredentials" class="text-white bg-gray-900 hover:bg-gray-700 p-2 px-5 rounded-md">Setup</button>
+                <div class="py-2 flex">
+                    <div class="flex">
+                        <button @click="setupCredentials" class="text-white bg-gray-900 hover:bg-gray-700 p-2 px-5 rounded-md flex">
+                            <Loading v-if="loading" class="w-6 animate-spin mr-2" />
+                            Setup
+                        </button>
+                    </div>
+                    <div class="ml-2" v-if="setup_method == 'provider'">
+                        <button @click="removeCredentials" class="text-white bg-red-800 hover:bg-red-700 p-2 px-5 rounded-md">Remove</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,9 +76,11 @@ import { CredentialFormSchema, FormType, ProviderEntity } from '../../core/model
 import SchemaInput from '../../components/schema_input/SchemaInput.vue'
 import RadioInput from '../../components/schema_input/RadioInput.vue'
 import { useSnakeMessage } from '../message_box/snake'
+import Loading from './icons/loading.svg'
 
 const { openSnakeMessage } = useSnakeMessage()
 const show = ref(false)
+const loading = ref(false)
 const provider = ref('')
 const provider_entity = ref<ProviderEntity | null>(null)
 const setup_method = ref<string>('provider')
@@ -149,6 +159,7 @@ const validateCredentials = async () => {
 
 const setupCredentials = async () => {
     try {
+        loading.value = true
         await validateCredentials()
     } catch (e: any) {
         openSnakeMessage({
@@ -156,21 +167,30 @@ const setupCredentials = async () => {
             type: 'error'
         })
         return
+    } finally {
+        loading.value = false
     }
 
     if (setup_method.value == 'provider') {
-        await ModelManager.AddProviderCredentials(
+        ModelManager.AddProviderCredentials(
             provider.value,
             model_credential.value
         )
     } else {
-        await ModelManager.AddModelProviderCredentials(
+        ModelManager.AddModelProviderCredentials(
             provider.value,
             model_credential.value['model'],
             model_credential.value
         )
     }
 
+    onClose()
+}
+
+const removeCredentials = async () => {
+    if (setup_method.value == 'provider') {
+        ModelManager.RemoveProviderCredentials(provider.value)
+    } 
     onClose()
 }
 

@@ -25,7 +25,7 @@
                         </div>
                     </button>
                     <p class="text-xs font-semibold text-gray-400 w-full">Scenario</p>
-                    <button @click="to('/settings/setup_model')"
+                    <button @click="to('/settings/setup_scenario')"
                         class="text-sm text-left w-full p-2 text-white hover:bg-gray-800 rounded-md truncate">
                         <div class="flex">
                             <div class="pr-2">

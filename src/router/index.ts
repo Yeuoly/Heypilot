@@ -15,6 +15,15 @@ const routes: RouteRecordRaw[] = [
       name: 'setup_model',
       component: () => import('../views/settings/children/setup/Setup.vue')
     }, {
+      path: '/settings/setup_scenario',
+      name: 'setup_scenario',
+      component: () => import('../views/settings/children/scenario/Setup.vue'),
+      children: [{
+        path: '/settings/setup_scenario/:id',
+        name: 'edit_scenario',
+        component: () => import('../views/settings/children/scenario/children/settings/Settings.vue')
+      }]
+    }, {
       path: '/settings',
       redirect: '/settings/setup_model'
     }]

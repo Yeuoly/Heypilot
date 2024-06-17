@@ -4,6 +4,7 @@ const store = new Store(import.meta.env.VITE_STORE_PATH);
 
 export const SetData = async (key: string, value: any) => {
     await store.set(key, value)
+    await store.save()
 }
 
 export const GetData = async <T>(key: string, def?: T) => {

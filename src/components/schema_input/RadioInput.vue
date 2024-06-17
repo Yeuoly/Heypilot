@@ -1,11 +1,9 @@
 <template>
-    <div class="flex">
+    <div class="flex items-center mr-2">
         <div class="mr-2 p-2 items-center text-center text-white w-1/2 bg-gray-900 rounded-lg
             cursor-pointer"
             v-for="option in options"
-            :class="{
-                border: model == option.value,
-            }"
+            :class="child_class(option.value)"
             @click="model = option.value"
             >
                 {{ option.label }}
@@ -14,7 +12,21 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue'
+import { PropType, computed } from 'vue'
+
+const child_class = computed(() => {
+    return (value: string) => {
+        const cls: any = {
+            'border': model.value == value
+        }
+
+        for (const c of props.child_class) {
+            cls[c] = true
+        }
+
+        return cls
+    }
+})
 
 const props = defineProps({
     options: {
@@ -22,6 +34,10 @@ const props = defineProps({
             label: string,
             value: string
         }[]>,
+    },
+    child_class: {
+        type: Array as PropType<string[]>,
+        default: []
     }
 })
 

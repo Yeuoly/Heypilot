@@ -91,8 +91,8 @@ const { context } = useChatContext()
 const router = useRouter()
 
 const onHideClick = () => {
-    // router.push('/chat')
-    // hideWindow()
+    router.push('/chat')
+    hideWindow()
 }
 
 const onMaxClick = () => {
@@ -104,8 +104,8 @@ const removeImage = () => {
 }
 
 const { attachImages, imagePaths, text } = useGlobalContext()
-const { onMouseMove } = useActiveMonitor(text, onHideClick)
 const { messages, sendMessage } = useConversation(messageContainer, text, imagePaths)
+const { onMouseMove } = useActiveMonitor(text, messages, onHideClick)
 useGlobalEvent(inputContainer)
 </script>
 

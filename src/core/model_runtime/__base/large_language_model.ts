@@ -11,6 +11,16 @@ export abstract class MessageCallback {
     abstract onError(e: any): void
 }
 
+export interface LLMInvokePayload {
+    model: string
+    credentials: {[key: string]: string}
+    prompt_messages: PromptMessage[]
+    model_parameters: {[key: string]: any}
+    tools?: PromptMessageTool[]
+    stop?: string[]
+    callbacks?: MessageCallback[]
+} 
+
 export class LargeLanguageModel {
     model_schemas: AIModelEntity[]
 
@@ -18,26 +28,27 @@ export class LargeLanguageModel {
         this.model_schemas = model_schemas
     }
     
-    _invoke(model: string, credentials: {[key: string]: string}, 
-            prompt_messages: PromptMessage[], model_parameters: {[key: string]: any},
-            tools?: PromptMessageTool[], stop?: string[],
-            callbacks?: MessageCallback[]): void {}
+    _invoke(p: LLMInvokePayload): void {}
 
     _validate_credentials(model: string, credentials: { [key: string]: string; }): Promise<boolean> {
         return Promise.reject<boolean>()
     }
 
-    invoke(model: string, credentials: {[key: string]: string}, 
-        prompt_messages: PromptMessage[], model_parameters: {[key: string]: any},
-        tools?: PromptMessageTool[], stop?: string[],
-        callbacks?: MessageCallback[]
-    ): void {
-        if (!model_parameters) {
-            model_parameters = {}
+    invoke(p: LLMInvokePayload): void {
+        if (!p.model_parameters) {
+            p.model_parameters = {}
         }
 
-        model_parameters = this._validate_and_filter_model_parameters(model, model_parameters, credentials)
-        this._invoke(model, credentials, prompt_messages, model_parameters, tools, stop, callbacks)
+        const model_parameters = this._validate_and_filter_model_parameters(p.model, p.model_parameters, p.credentials)
+        this._invoke({
+            model: p.model,
+            credentials: p.credentials,
+            prompt_messages: p.prompt_messages,
+            model_parameters: model_parameters,
+            tools: p.tools,
+            stop: p.stop,
+            callbacks: p.callbacks
+        })
     }
 
     validate_credentials(model: string, credentials: { [key: string]: string; }) {

@@ -1,6 +1,7 @@
 import { PromptMessage, PromptMessageContent, PromptMessageContentType, PromptMessageImageContent, PromptMessageImageContentDetail, PromptMessageRole, PromptMessageTool } from "../model_runtime/__base/entities"
 import { LLMResultChunk } from "../model_runtime/__base/llm_entities"
 import { ModelManager } from "../model_runtime/model_manager"
+import { ScenarioManager } from "../scenario/scenario_manager"
 import { MessageFrom, ModelConfig } from "./entities"
 import { Message } from "./message"
 import { EventEmitter } from 'events'
@@ -46,19 +47,19 @@ export class Conversation {
 
     async StartConversation(context: string, text: string, images: string[]) {
         const self = this
-        const model_instance = await ModelManager.GetModelInstance(this.config.provider, this.config.model)
-        const credentials = {
-            api_key: import.meta.env.VITE_OPENAI_KEY,
-        }
+        const model_instance = ModelManager.GetModelInstance(this.config.provider, this.config.model)
+        const currentScenario = ScenarioManager.getCurrentScenario()
+        const { system_message, user_message: user_message_text } = ScenarioManager.formatScenario(currentScenario, text, context)
+        const credentials = ModelManager.GetProviderCredentials(currentScenario.model_config.provider)
+
         const prompt_messages: PromptMessage[] = [
             {
                 role: PromptMessageRole.SYSTEM,
-                content: 'You are a helpful assistant, following is the context of the conversation:'
-                    + context
+                content: system_message
             }, 
         ]
 
-        const user_message = new Message('', MessageFrom.USER, text, new Date().getTime(), images)
+        const user_message = new Message('', MessageFrom.USER, user_message_text, new Date().getTime(), images)
 
         for (const history of this.histories.concat(user_message)) {
             if (history.from === MessageFrom.USER) {
@@ -99,8 +100,14 @@ export class Conversation {
         const SaveConversation = this.SaveConversation
         let full_text = ''
 
-        model_instance.invoke(this.config.model, credentials, prompt_messages, model_parameters, tools, stop,
-            [{
+        model_instance.invoke({
+            model: this.config.model,
+            credentials: credentials,
+            prompt_messages: prompt_messages,
+            model_parameters: model_parameters,
+            tools: tools,
+            stop: stop,
+            callbacks: [{
                 onMessage(message: LLMResultChunk) {
                     // push message to event
                     self.event.emit('message', message)
@@ -118,7 +125,7 @@ export class Conversation {
                     
                 }
             }]
-        )
+        })
     }
 
     async SaveConversation() {}
