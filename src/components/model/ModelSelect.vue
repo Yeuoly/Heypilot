@@ -26,7 +26,7 @@
 import { ModelConfig } from '../../core/scenario/entities'
 import Model from './icons/model.svg'
 import Menu from './icons/menu.svg'
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { ModelManager } from '../../core/model_runtime/model_manager'
 import ModelSelector from './ModelSelector.vue'
 
@@ -38,15 +38,6 @@ const position = ref({
 
 const model = defineModel<ModelConfig>({
     required: true
-})
-
-const model_entity = computed(() => {
-    try {
-        const provider = ModelManager.GetModelEntity(model.value.provider, model.value.model)
-        return provider
-    } catch (e) {
-        return null
-    }
 })
 
 const open = () => {
@@ -68,4 +59,23 @@ const open = () => {
 
     show.value = true
 }
+
+const onClickOtherWhere = (e: MouseEvent) => {
+    if (!select.value) {
+        return
+    }
+
+    if (!select.value.contains(e.target as Node)) {
+        show.value = false
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('click', onClickOtherWhere)
+})
+
+onUnmounted(() => {
+    document.removeEventListener('click', onClickOtherWhere)
+})
+
 </script>

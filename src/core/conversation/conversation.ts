@@ -6,15 +6,17 @@ import { MessageFrom, ModelConfig } from "./entities"
 import { Message } from "./message"
 import { EventEmitter } from 'events'
 
+export type MESSAGE_END_EVENT = 'message_end'
+
 export class EventListenerState<T> {
     running: boolean
-    results: T[]
+    results: (T | MESSAGE_END_EVENT)[]
 
     constructor(event: EventEmitter) {
         this.running = true
         this.results = []
 
-        event.on('message', (message: T) => {
+        event.on('message', (message: T | MESSAGE_END_EVENT) => {
             this.results.push(message)
         })
     }
@@ -49,17 +51,16 @@ export class Conversation {
         const self = this
         const model_instance = ModelManager.GetModelInstance(this.config.provider, this.config.model)
         const currentScenario = ScenarioManager.getCurrentScenario()
-        const { system_message, user_message: user_message_text } = ScenarioManager.formatScenario(currentScenario, text, context)
         const credentials = ModelManager.GetProviderCredentials(currentScenario.model_config.provider)
 
         const prompt_messages: PromptMessage[] = [
             {
                 role: PromptMessageRole.SYSTEM,
-                content: system_message
+                content: context
             }, 
         ]
 
-        const user_message = new Message('', MessageFrom.USER, user_message_text, new Date().getTime(), images)
+        const user_message = new Message('', MessageFrom.USER, text, new Date().getTime(), images)
 
         for (const history of this.histories.concat(user_message)) {
             if (history.from === MessageFrom.USER) {
@@ -120,6 +121,8 @@ export class Conversation {
                     self.histories.push(user_message)
                     self.histories.push(assistant_message)
                     SaveConversation()
+                    // push end event to event
+                    self.event.emit('message', 'message_end')
                 },
                 onError(e) {
                     

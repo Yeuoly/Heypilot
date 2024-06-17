@@ -32,6 +32,19 @@ export const setChatScreenshotContextListener = (listener: (screenshot: string) 
     contextEvent.on('setScreenshot', listener)
 }
 
+export const setChatContextReplaceCompletedListener = (listener: () => void) => {
+    contextEvent.on('replaceCompleted', listener)
+}
+
+export const removeChatContextReplaceCompletedListener = (listener: () => void) => {
+    contextEvent.off('replaceCompleted', listener)
+}
+
+
+export const setChatContextReplaceCompleted = () => {
+    contextEvent.emit('replaceCompleted')
+}
+
 export const useChatContext = () => {
     const context = inject<Ref<{
         context: string
@@ -50,16 +63,19 @@ export const useChatContext = () => {
 export const SyncReplaceContext = async (screenshot: boolean) => {
     emit(Event.EVENT_REPLACE_CONTEXT_WITH_SELECTION, {})
 
+    let count = 1
+
     const unset = await listen<ReplaceContextWithSelectionResponse>(
         Event.EVENT_REPLACE_CONTEXT_WITH_SELECTION_RESPONSE, 
         async (event) => {
             unset()
-            console.log('SyncReplaceContext', event.payload.selection)
             setChatTextContext(event.payload.selection)
+            count -= 1
         }
     )
 
     if (screenshot) {
+        count += 1
         setTimeout(async () => {
             const size = await appWindow.outerSize();
             const screenshot = await screenShot({
@@ -71,6 +87,18 @@ export const SyncReplaceContext = async (screenshot: boolean) => {
             if (screenshot) {
                 setChatScreenshotContext(screenshot)
             }
+            count -= 1
         })
     }
+
+    return new Promise((resolve) => {
+        const interval = setInterval(() => {
+            if (count === 0) {
+                clearInterval(interval)
+                resolve(true)
+
+                contextEvent.emit('replaceCompleted')
+            }
+        }, 100)
+    })
 }

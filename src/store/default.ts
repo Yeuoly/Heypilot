@@ -11,6 +11,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [{
         provider: 'openai',
         model: 'gpt-4o',
         params: {}
+    },
+    advanced_setting: {
+        auto_commit: false,
     }
 }, {
     id: 'translator',
@@ -23,6 +26,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [{
         provider: 'openai',
         model: 'gpt-4o',
         params: {}
+    },
+    advanced_setting: {
+        auto_commit: true,
     }
 }, {
     id: 'bug_hunter',
@@ -35,6 +41,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [{
         provider: 'openai',
         model: 'gpt-4o',
         params: {}
+    },
+    advanced_setting: {
+        auto_commit: false,
     }
 }, {
     id: 'my_girl',
@@ -47,6 +56,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [{
         provider: 'openai',
         model: 'gpt-4o',
         params: {}
+    },
+    advanced_setting: {
+        auto_commit: false,
     }
 }, {
     id: 'sequel_writer',
@@ -59,5 +71,8 @@ export const DEFAULT_SCENARIOS: Scenario[] = [{
         provider: 'openai',
         model: 'gpt-4o',
         params: {}
+    },
+    advanced_setting: {
+        auto_commit: true,
     }
 }]

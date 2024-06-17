@@ -83,6 +83,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { hideWindow } from '../../utils/window'
 import { useChatContext } from '../../utils/context'
+import { useAutoSending } from './auto_sending'
 
 const messageContainer = ref<HTMLElement | null>(null)
 const inputContainer = ref<HTMLInputElement | null>(null)
@@ -106,6 +107,7 @@ const removeImage = () => {
 const { attachImages, imagePaths, text } = useGlobalContext()
 const { messages, sendMessage } = useConversation(messageContainer, text, imagePaths)
 const { onMouseMove } = useActiveMonitor(text, messages, onHideClick)
+useAutoSending(context, text, sendMessage)
 useGlobalEvent(inputContainer)
 </script>
 

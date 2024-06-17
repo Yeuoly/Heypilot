@@ -1,10 +1,10 @@
 <template>
-    <div class="flex items-center mr-2">
-        <div class="mr-2 p-2 items-center text-center text-white w-1/2 bg-gray-900 rounded-lg
+    <div class="flex items-center">
+        <div class="p-2 items-center text-center text-white w-1/2 bg-gray-900 rounded-lg
             cursor-pointer"
-            v-for="option in options"
-            :class="child_class(option.value)"
-            @click="model = option.value"
+            v-for="option, n in options"
+            :class="child_class(option.value, n)"
+            @click.stop="model = option.value"
             >
                 {{ option.label }}
         </div>
@@ -15,9 +15,10 @@
 import { PropType, computed } from 'vue'
 
 const child_class = computed(() => {
-    return (value: string) => {
+    return (value: string, i: number) => {
         const cls: any = {
-            'border': model.value == value
+            'border': model.value == value,
+            'mr-2': i < (props.options?.length || 0) - 1
         }
 
         for (const c of props.child_class) {

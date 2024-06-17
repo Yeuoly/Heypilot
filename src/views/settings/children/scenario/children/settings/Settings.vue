@@ -13,15 +13,40 @@
                     placeholder="Scenario Name"
                 />
             </div>
-            <div class="flex-grow flex flex-row-reverse h-8 text-sm">
-                <RadioInput v-model="mode" :options="[{
-                    label: 'Chat',
-                    value: ScenarioMode.CHAT
-                }, {
-                    label: 'Complete',
-                    value: ScenarioMode.COMPLETION
-                }]
-                " :child_class="['w-20']"></RadioInput>
+            <div class="flex-grow flex flex-row-reverse h-8 text-sm items-center">
+                <Popup class="border p-1 px-2 bg-gray-900 rounded-md items-center h-8 mr-2"
+                    :width="300"
+                    :height="400"
+
+                >
+                    <template v-slot:placeholder>
+                        <div class="flex cursor-pointer">
+                            <div class="w-5 mr-2">
+                                <Advanced class="w-5" />
+                            </div>
+                            <div>
+                                Advanced Settings
+                            </div>
+                        </div>
+                    </template>
+                    <template v-slot:popup>
+                        <div class="mt-2 p-2 bg-gray-900 rounded-lg h-full shadow-lg" @click.stop="() => {}">
+                            <p class="text-xs font-semibold text-gray-400 w-full pb-1">Assistant Mode</p>
+                            <div class="w-full">
+                                <RadioInput v-model="mode" :options="[{
+                                    label: 'Chat',
+                                    value: ScenarioMode.CHAT
+                                }, {
+                                    label: 'Complete',
+                                    value: ScenarioMode.COMPLETION
+                                }]
+                                "></RadioInput>
+                            <p class="text-xs font-semibold text-gray-400 w-full py-1">Auto Sending using Hotkey</p>
+                            <SwitchInput v-model="advanced_setting.auto_commit" />
+                        </div>
+                        </div>
+                    </template>
+                </Popup>
                 <ModelSelect class="w-40 h-8 mx-2" v-model="model_select"></ModelSelect>
             </div>
         </div>
@@ -49,14 +74,17 @@
 
 <script setup lang="ts">
 import { ScenarioManager } from '../../../../../../core/scenario/scenario_manager'
-import { ModelConfig, ScenarioMode } from '../../../../../../core/scenario/entities'
+import { AdvancedSetting, ModelConfig, ScenarioMode } from '../../../../../../core/scenario/entities'
 import Textarea from '../../../../../../components/schema_input/Textarea.vue'
 import RadioInput from '../../../../../../components/schema_input/RadioInput.vue'
 import ModelSelect from '../../../../../../components/model/ModelSelect.vue'
+import SwitchInput from '../../../../../../components/schema_input/SwitchInput.vue'
+import Popup from '../../../../../../components/common/Popup.vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Bot from '../../icons/bot.svg'
 import Pen from '../../icons/pen.svg'
+import Advanced from './icons/advanced.svg'
 
 const route = useRoute()
 const {
@@ -71,6 +99,9 @@ const model_select = ref<ModelConfig>({
     provider: 'openai',
     model: 'gpt-4o',
     params: {}
+})
+const advanced_setting = ref<AdvancedSetting>({
+    auto_commit: false
 })
 
 const id = ref<string | null>(null)
@@ -87,6 +118,7 @@ const scenario = computed(() => {
         name.value = scenario.name
         model_select.value = scenario.model_config
         mode.value = scenario.mode
+        advanced_setting.value = scenario.advanced_setting
     }
 
     return scenario
@@ -104,7 +136,8 @@ const updateScenario = () => {
         user_message_template: user_message_template.value,
         mode: mode.value,
         model_config: model_select.value,
-        created_at: Date.now()
+        advanced_setting: advanced_setting.value,
+        created_at: Date.now(),
     })
 }
 
