@@ -1,15 +1,15 @@
 <template>
-    <div class="overflow-y-auto flex h-full w-full">
-        <div class="w-1/4 bg-gray-900 h-full flex flex-col overflow-y-auto">
-            <div class="p-3 text-lg flex">
-                <Scenario class="w-6 mr-2" />
+    <div class="overflow-y-auto flex h-full w-full rounded bg-backgroundSecondary">
+        <div class="w-1/5 h-full flex flex-col overflow-y-auto">
+            <div class="p-3 text-lg flex text-md">
+                <Scenario class="w-5 mr-2" />
                 Scenario Settings
             </div>
             <div class="flex-grow px-3">
                 <p class="text-xs font-semibold text-gray-400 w-full pb-1">Scenarios</p>
                 <div v-for="scenario in scenarios" 
                     @click="to(scenario.id)"
-                    class="rounded-lg p-2 my-1 hover:bg-gray-700 cursor-pointer flex items-center"
+                    class="rounded-lg text-sm p-2 my-1 hover:bg-gray-700 cursor-pointer flex items-center"
                     :class="{
                         'bg-gray-700': activeScenario == scenario.id
                     }">
@@ -27,7 +27,7 @@
                 <div class="rounded-lg p-2 bg-gray-700 cursor-pointer text-center  truncate">Coming soon</div>
             </div>
         </div>
-        <div class="flex-grow">
+        <div class="flex-grow rounded-md">
             <RouterView></RouterView>
         </div>
     </div>

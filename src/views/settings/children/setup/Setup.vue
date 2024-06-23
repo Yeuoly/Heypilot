@@ -1,6 +1,6 @@
 <template>
     <div class="p-3 overflow-y-auto">
-        <div v-for="provider in providers" class="p-4 bg-gray-900 rounded-xl my-1">
+        <div v-for="provider in providers" class="p-4 bg-background rounded-lg my-1">
             <div class="flex">
                 <div class="flex-grow">
                     <div class="font-semibold text-xl">
@@ -10,7 +10,7 @@
                         {{ provider.provider.description?.en_US }}
                     </div>
                 </div>
-                <div class="w-40 h-8 border border-1 border-blue-700 rounded-lg">
+                <div class="w-40 h-8 border border border-blue-500 rounded-lg">
                     <div class="p-1 bg-grey-700 flex items-center cursor-pointer"
                         @click="setupModel(provider.provider.provider)">
                         <div v-if="counter(provider.provider.provider)" class="bg-green-400 ml-2 w-2 h-2 rounded-full"></div>

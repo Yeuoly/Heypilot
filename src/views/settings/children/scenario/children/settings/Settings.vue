@@ -1,23 +1,19 @@
 <template>
     <div class="flex flex-col h-full p-2">
-        <div class="text-lg pl-2 bg-gray-800 flex items-center h-10">
-            <div v-if="scenario?.mode == ScenarioMode.CHAT" class="w-8 mr-2">
-                <Bot class="w-8" />
-            </div>
-            <div v-else class="w-5 mr-2">
-                <Pen class="w-5" />
-            </div>
+        <div class="text-lg pl-2 flex items-center h-10">
             <div class="flex-grow">
-                <input class="bg-transparent text-white border-b w-full placeholder-gray-400 focus:outline-none"
+                <input class="w-full bg-transparent text-white border-b border-gray-500 focus:border-blue-500 w-full placeholder-gray-400 focus:outline-none"
                     v-model="name"
                     placeholder="Scenario Name"
                 />
             </div>
-            <div class="flex-grow flex flex-row-reverse h-8 text-sm items-center">
-                <Popup class="border p-1 px-2 bg-gray-900 rounded-md items-center h-8 mr-2"
+            <div class="flex flex-row-reverse h-8 text-sm items-center">
+                <div  @click="updateScenario" class="border border-blue-500 p-1 px-3 rounded-md mr-2 cursor-pointer text-primary">
+                    Save
+                </div>
+                <Popup class="border border-gray-500 p-1 px-2 rounded-md items-center h-8 mr-2"
                     :width="300"
                     :height="400"
-
                 >
                     <template v-slot:placeholder>
                         <div class="flex cursor-pointer">
@@ -30,7 +26,7 @@
                         </div>
                     </template>
                     <template v-slot:popup>
-                        <div class="mt-2 p-2 bg-gray-900 rounded-lg h-full shadow-lg" @click.stop="() => {}">
+                        <div class="mt-2 p-2 bg-background rounded-lg h-full shadow-lg" @click.stop="() => {}">
                             <p class="text-xs font-semibold text-gray-400 w-full pb-1">Assistant Mode</p>
                             <div class="w-full">
                                 <RadioInput v-model="mode" :options="[{
@@ -52,22 +48,11 @@
         </div>
         <div class="flex-grow flex flex-col">
             <div class="p-2 h-1/2 flex flex-col h-full">
-                <div class="text-sm mb-1">
-                    System Message
-                </div>
-                <Textarea class="flex-grow" v-model="system_message"></Textarea>
+                <Textarea class="flex-grow" v-model="system_message" label="System Message"></Textarea>
             </div>
             <div class="p-2 h-1/2 flex flex-col h-full">
-                <div class="text-sm mb-1">
-                    User Message Template
-                </div>
-                <Textarea class="flex-grow" v-model="user_message_template"></Textarea>
+                <Textarea class="flex-grow" v-model="user_message_template" label="User Message Template"></Textarea>
             </div>
-        </div>
-        <div class="h-16 p-2">
-            <button @click="updateScenario" class="w-20 h-10 bg-gray-700 hover:bg-gray-600 text-white rounded-md">
-                Save
-            </button>
         </div>
     </div>
 </template>
@@ -82,8 +67,6 @@ import SwitchInput from '../../../../../../components/schema_input/SwitchInput.v
 import Popup from '../../../../../../components/common/Popup.vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import Bot from '../../icons/bot.svg'
-import Pen from '../../icons/pen.svg'
 import Advanced from './icons/advanced.svg'
 
 const route = useRoute()
@@ -105,9 +88,10 @@ const advanced_setting = ref<AdvancedSetting>({
 })
 
 const id = ref<string | null>(null)
-const scenario = computed(() => {
+
+const refreshScenario = async () => {
     if (!id.value) {
-        return null
+        return
     }
 
     const scenario = getter(id.value)
@@ -120,9 +104,7 @@ const scenario = computed(() => {
         mode.value = scenario.mode
         advanced_setting.value = scenario.advanced_setting
     }
-
-    return scenario
-})
+}
 
 const updateScenario = () => {
     if (!id.value) {
@@ -143,6 +125,7 @@ const updateScenario = () => {
 
 watch(() => route.params.id, (nid) => {
     id.value = nid as string
+    refreshScenario()
 }, { immediate: true })
 
 </script>
