@@ -1,6 +1,6 @@
 import { currentMonitor } from "@tauri-apps/api/window"
 import { router } from "../router"
-import { SLIDE_MODE_WINDOW_SIZE, hideBar, moveWindow, resizeWindow, setNotOnTop, setOnTop, showApp, showBar } from "./window"
+import { SLIDE_MODE_WINDOW_SIZE, hideBar, resizeWindow, setNotOnTop, setOnTop, showApp, showBar } from "./window"
 
 export const changeToSlideMode = async () => {
     // get monitor size
@@ -12,7 +12,6 @@ export const changeToSlideMode = async () => {
     router.push('/slide')
     hideBar()
     resizeWindow(SLIDE_MODE_WINDOW_SIZE.width, SLIDE_MODE_WINDOW_SIZE.height)
-    moveWindow(size.width - SLIDE_MODE_WINDOW_SIZE.width, 0)
     setOnTop()
     showApp()
 }
@@ -25,7 +24,6 @@ export const changeToNormalMode = async () => {
     }
     router.push('/chat')
     resizeWindow(size.width, size.height)
-    moveWindow(0, 0)
     setNotOnTop()
     showBar()
     showApp()

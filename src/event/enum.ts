@@ -6,4 +6,5 @@ export enum Event {
     EVENT_SLIDE_FOCUS_INPUT = 'slide-focus-input',
     EVENT_REPLACE_CONTEXT_WITH_SELECTION = 'replace-context-with-selection',
     EVENT_REPLACE_CONTEXT_WITH_SELECTION_RESPONSE = 'replace-context-with-selection-response',
+    EVENT_MOUSE_CIRCLE = 'mouse-circle',
 }

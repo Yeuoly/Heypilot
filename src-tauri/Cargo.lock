@@ -1498,6 +1498,7 @@ name = "hey-copilot"
 version = "0.0.0"
 dependencies = [
  "base64 0.22.1",
+ "enigo",
  "image 0.24.9",
  "selection",
  "serde",

@@ -14,6 +14,7 @@ pub const EVENT_CLICK_SCENARIO: &str = "click-scenario";
 pub const EVENT_QUIT: &str = "quit";
 pub const EVENT_REPLACE_CONTEXT_WITH_SELECTION: &str = "replace-context-with-selection";
 pub const EVENT_REPLACE_CONTEXT_WITH_SELECTION_RESPONSE: &str = "replace-context-with-selection-response";
+pub const EVENT_MOUSE_CIRCLE: &str = "mouse-circle";
 
 pub fn mount_event_listener(app: &mut App) {
     {

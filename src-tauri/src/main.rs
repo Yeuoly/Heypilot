@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::SystemTray;
+use tauri::{Manager, SystemTray};
 
 mod system_tray;
 mod event;
@@ -9,6 +9,7 @@ mod entities;
 mod screenshot;
 mod image;
 mod selection;
+mod watcher;
 
 fn main() {
     let system_tray_menu = system_tray::create_system_tray([].to_vec());
@@ -18,6 +19,7 @@ fn main() {
         .plugin(tauri_plugin_store::Builder::default().build())
         .setup(|app| {
             event::mount_event_listener(app);
+            watcher::create_watcher(&app.app_handle());
             Ok(())
         })
         .system_tray(SystemTray::new().with_menu(system_tray_menu))

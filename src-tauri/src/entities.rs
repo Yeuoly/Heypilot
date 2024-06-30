@@ -38,3 +38,9 @@ pub struct ScreenShotResponsePayload {
     pub path: String
 }
 
+#[derive(Serialize)]
+#[derive(Clone)]
+pub struct MouseCircleEventPayload {
+    pub round: f64,
+    pub position: (i32, i32)
+}
